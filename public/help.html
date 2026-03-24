@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aide - Plan de classe</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: 40px auto;
+      padding: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e2e8f0;
+    }
+
+    .header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .header h1 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      color: #0f172a;
+    }
+
+    .header p {
+      margin: 0;
+      color: #475569;
+      font-size: 1rem;
+    }
+
+    .section {
+      margin-bottom: 28px;
+      padding: 20px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border-left: 6px solid #3b82f6;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+
+    .section p {
+      margin: 8px 0;
+      color: #334155;
+    }
+
+    .section strong {
+      color: #0f172a;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 0.85rem;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .footer {
+      margin-top: 32px;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        margin: 20px auto;
+        padding: 14px;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 1.6rem;
+      }
+
+      .section {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="header">
+        <h1>Aide et mode d'emploi</h1>
+        <p>
+          Cette page explique le fonctionnement de l'application de génération de plan de classe.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>1. Ajouter des élèves</h2>
+        <p>Tu peux ajouter un élève manuellement avec son nom et son genre.</p>
+        <p>Tu peux aussi importer un fichier CSV exporté depuis Pronote.</p>
+        <p>La liste des élèves permet aussi de marquer ceux qui doivent être placés devant.</p>
+      </div>
+
+      <div class="section">
+        <h2>2. Configurer la salle</h2>
+        <p>Choisis le nombre de lignes et de colonnes de la salle.</p>
+        <p>Définis combien de rangées correspondent à la zone “devant”.</p>
+        <p>Utilise les modes d’édition pour activer ou désactiver des places et créer des tables.</p>
+      </div>
+
+      <div class="section">
+        <h2>3. Modes d’édition</h2>
+        <p><strong>Activer / désactiver</strong> : ajoute ou retire une place.</p>
+        <p><strong>Table 1</strong> : crée une table individuelle.</p>
+        <p><strong>Table 2</strong> : clique sur la place de gauche pour former une table de 2.</p>
+        <p><strong>Double table 2+2</strong> : clique sur la place la plus à gauche d’un bloc de 4 places sur une ligne.</p>
+        <p><strong>Dissocier</strong> : sépare une table en places individuelles.</p>
+      </div>
+
+      <div class="section">
+        <h2>4. Règles de placement</h2>
+        <p>Tu peux demander à placer certains élèves devant.</p>
+        <p>Tu peux préférer une alternance fille / garçon côte à côte.</p>
+        <p>Tu peux définir des paires à éloigner au maximum.</p>
+        <p>Tu peux aussi interdire que deux élèves soient côte à côte.</p>
+      </div>
+
+      <div class="section">
+        <h2>5. Génération du plan</h2>
+        <p>Le bouton <strong>“Générer le plan”</strong> calcule automatiquement une répartition des élèves.</p>
+        <p>Le score affiché permet d’évaluer la qualité du plan par rapport aux règles choisies.</p>
+        <p>La section <strong>“Points à surveiller”</strong> signale les contraintes qui n’ont pas été respectées au mieux.</p>
+      </div>
+
+      <div class="section">
+        <h2>6. Sauvegarde et export</h2>
+        <p><strong>Sauvegarder le projet</strong> enregistre la salle, les élèves et les règles dans un fichier JSON.</p>
+        <p><strong>Charger un projet</strong> recharge un fichier sauvegardé plus tard.</p>
+        <p><strong>Export SVG</strong> produit une image vectorielle du plan de classe.</p>
+      </div>
+
+      <div class="footer">
+        Besoin d’aide supplémentaire ? Consulte cette page à tout moment depuis l’application.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import { FiDownload, FiSave, FiFolder, FiUpload } from "react-icons/fi";
+import { FiDownload, FiSave, FiFolder, FiUpload, FiHelpCircle } from "react-icons/fi";
 
 
 type Gender = "Masculin" | "Féminin" | "Autre" | "";
@@ -772,7 +772,10 @@ export default function App() {
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <div className="mx-auto max-w-[1800px] p-6">
         <header className="mb-6 rounded-3xl bg-white p-6 shadow-sm">
-          <h1 className="text-3xl font-bold">Générateur de plan de classe</h1>
+          <h1 className="text-3xl font-bold">Plan de classe</h1>
+          <button onClick={() => window.open("/help.html", "_blank")} className="flex items-center gap-2">
+            <FiHelpCircle /> Aide
+          </button>
         </header>
 
         <section className="rounded-3xl bg-white p-5 shadow-sm">
@@ -793,9 +796,11 @@ export default function App() {
 
           <div className="mt-6 overflow-auto rounded-3xl border border-slate-200 bg-slate-50 p-6">
             <div className="mb-5 flex justify-center">
-              <div className="h-5 w-[70%] rounded-xl bg-slate-900" />
+              <div className="h-6 w-[70%] rounded-xl bg-slate-900 flex items-center justify-center text-white text-sm font-medium">
+                Tableau
+              </div>
             </div>
-
+            
             <div className="flex w-max min-w-full flex-col gap-4">
               {Array.from({ length: rows }).map((_, row) => (
                 <div key={`row-${row}`} className="flex items-stretch justify-center">
