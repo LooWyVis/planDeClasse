@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# 🎓 Générateur de plan de classe
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Application web permettant de générer automatiquement un plan de classe
+optimisé à partir d'une liste d'élèves.
 
-Currently, two official plugins are available:
+## ✨ Fonctionnalités
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 👩‍🎓 Gestion des élèves
 
-## React Compiler
+-   Ajout manuel (nom + genre)
+-   Import CSV depuis Pronote
+-   Marquage des élèves à placer devant
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🏫 Configuration de la salle
 
-## Expanding the ESLint configuration
+-   Nombre de lignes et colonnes personnalisable
+-   Édition visuelle de la salle :
+    -   Activer / désactiver des places
+    -   Tables de 1
+    -   Tables de 2
+    -   Doubles tables (2+2)
+-   Réinitialisation rapide de la disposition
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### ⚙️ Règles de placement
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+-   Placement prioritaire devant
+-   Alternance fille / garçon
+-   Paires à éloigner
+-   Paires interdites côte à côte
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🤖 Génération automatique
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+-   Algorithme d'optimisation
+-   Score du plan généré
+-   Détection des problèmes
+
+### 💾 Sauvegarde / Export
+
+-   Sauvegarde du projet en JSON
+-   Chargement d'un projet
+-   Export en SVG (image du plan de classe)
+
+### 📖 Page d'aide intégrée
+
+-   Explication complète des fonctionnalités directement dans
+    l'application
+
+## 🚀 Installation
+
+``` bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Puis ouvrir : http://localhost:5173
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧠 Fonctionnement de l'algorithme
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+L'application utilise une approche heuristique : - génération aléatoire
+de placements - optimisation par échanges successifs - scoring basé sur
+: - contraintes respectées - distance entre élèves - mixité - position
+devant
+
+## 📂 Structure du projet
+
+src/ ├── App.tsx ├── main.tsx └── index.css
+
+## 🛠️ Stack technique
+
+-   React + Vite
+-   TypeScript
+-   Tailwind CSS
+
+## 📌 Roadmap
+
+-   Export PNG / PDF
+-   Rotation des tables
+-   Dispositions prédéfinies
+-   Drag & drop
+-   Multi-classes
+
+## 📜 Licence
+
+MIT
