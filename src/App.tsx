@@ -641,6 +641,11 @@ export default function App() {
     });
   }
 
+  function resetRoomLayout() {
+    setSeats(createSeats(rows, cols));
+    setResult({ assignment: {}, score: 0, reasons: [] });
+  }
+
   function handleSeatClick(row: number, col: number) {
     setSeats((current) => updateRoomSeat(current, row, col, editorMode, rows, cols));
   }
@@ -898,6 +903,10 @@ export default function App() {
                 <div className="rounded-2xl bg-slate-100 px-3 py-2">Tables 2 : {tableStats.duo}</div>
                 <div className="rounded-2xl bg-slate-100 px-3 py-2">Tables 2+2 : {tableStats.quad}</div>
               </div>
+
+              <button onClick={resetRoomLayout} className="mt-4 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm">
+                Réinitialiser la disposition
+              </button>
             </section>
 
             <section className="rounded-3xl bg-white p-5 shadow-sm">
@@ -1001,63 +1010,67 @@ export default function App() {
                   <div className="rounded-xl bg-slate-900 px-12 py-3 text-base font-semibold text-white">TABLEAU</div>
                 </div>
 
-                <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${cols}, ${seatUiWidth}px)`, width: "max-content" }}>
-                  {Array.from({ length: rows * cols }).map((_, index) => {
-                    const row = Math.floor(index / cols);
-                    const col = index % cols;
-                    const seat = getSeatAt(seats, row, col);
-                    if (!seat) return null;
+                <div className="flex w-max flex-col gap-4">
+                  {Array.from({ length: rows }).map((_, row) => (
+                    <div key={`row-${row}`} className="flex items-stretch">
+                      {Array.from({ length: cols }).map((__, col) => {
+                        const seat = getSeatAt(seats, row, col);
+                        if (!seat) return null;
 
-                    const sameLeft = getSeatAt(seats, row, col - 1)?.deskId === seat.deskId && seat.active;
-                    const sameRight = getSeatAt(seats, row, col + 1)?.deskId === seat.deskId && seat.active;
-                    const student = studentsById.get(result.assignment[seat.id] || "");
-                    const labelLines = splitLabel(student?.name || "Place libre", seat.deskKind === "single" ? 18 : 15);
-                    const isDeskStart = !sameLeft && seat.active;
+                        const sameLeft = getSeatAt(seats, row, col - 1)?.deskId === seat.deskId && seat.active;
+                        const sameRight = getSeatAt(seats, row, col + 1)?.deskId === seat.deskId && seat.active;
+                        const student = studentsById.get(result.assignment[seat.id] || "");
+                        const labelLines = splitLabel(student?.name || "Place libre", seat.deskKind === "single" ? 18 : 15);
+                        const isDeskStart = !sameLeft && seat.active;
+                        const tableGap = sameRight ? 0 : 32;
 
-                    return (
-                      <button
-                        key={seat.id}
-                        onClick={() => handleSeatClick(row, col)}
-                        className={`relative overflow-hidden p-3 text-left transition ${seat.active ? "hover:scale-[1.01]" : "hover:bg-slate-300"}`}
-                        style={{
-                          width: seatUiWidth,
-                          height: seatUiHeight,
-                          borderTopLeftRadius: sameLeft ? 6 : 20,
-                          borderBottomLeftRadius: sameLeft ? 6 : 20,
-                          borderTopRightRadius: sameRight ? 6 : 20,
-                          borderBottomRightRadius: sameRight ? 6 : 20,
-                          borderWidth: 2,
-                          borderStyle: "solid",
-                          borderColor: seat.active ? "#334155" : "#cbd5e1",
-                          borderLeftWidth: sameLeft ? 1 : 2,
-                          borderRightWidth: sameRight ? 1 : 2,
-                          background: !seat.active ? "#cbd5e1" : row < frontRowsCount ? "#dbeafe" : "#ffffff",
-                        }}
-                      >
-                        {seat.active ? (
-                          <>
-                            {isDeskStart && (
-                              <div className="absolute right-2 top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white">
-                                {getDeskTitle(seat.deskKind)}
-                              </div>
-                            )}
-                            <div className="mt-6 space-y-1">
-                              {labelLines.map((line, lineIndex) => (
-                                <div key={`${seat.id}-${lineIndex}`} className="text-sm font-semibold leading-4 text-slate-900">
-                                  {line}
+                        return (
+                          <button
+                            key={seat.id}
+                            onClick={() => handleSeatClick(row, col)}
+                            className={`relative overflow-hidden p-3 text-left transition ${seat.active ? "hover:scale-[1.01]" : "hover:bg-slate-300"}`}
+                            style={{
+                              width: seatUiWidth,
+                              height: seatUiHeight,
+                              marginRight: col === cols - 1 ? 0 : tableGap,
+                              borderTopLeftRadius: sameLeft ? 6 : 20,
+                              borderBottomLeftRadius: sameLeft ? 6 : 20,
+                              borderTopRightRadius: sameRight ? 6 : 20,
+                              borderBottomRightRadius: sameRight ? 6 : 20,
+                              borderWidth: 2,
+                              borderStyle: "solid",
+                              borderColor: seat.active ? "#334155" : "#cbd5e1",
+                              borderLeftWidth: sameLeft ? 1 : 2,
+                              borderRightWidth: sameRight ? 1 : 2,
+                              background: !seat.active ? "#cbd5e1" : row < frontRowsCount ? "#dbeafe" : "#ffffff",
+                            }}
+                          >
+                            {seat.active ? (
+                              <>
+                                {isDeskStart && (
+                                  <div className="absolute right-2 top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white">
+                                    {getDeskTitle(seat.deskKind)}
+                                  </div>
+                                )}
+                                <div className="mt-6 space-y-1">
+                                  {labelLines.map((line, lineIndex) => (
+                                    <div key={`${seat.id}-${lineIndex}`} className="text-sm font-semibold leading-4 text-slate-900">
+                                      {line}
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
-                            <div className="absolute bottom-2 left-3 text-[11px] text-slate-500">
-                              L{row + 1} • C{col + 1}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-sm font-medium text-slate-500">Inactif</div>
-                        )}
-                      </button>
-                    );
-                  })}
+                                <div className="absolute bottom-2 left-3 text-[11px] text-slate-500">
+                                  L{row + 1} • C{col + 1}
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex h-full items-center justify-center text-sm font-medium text-slate-500">Inactif</div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               </div>
             </section>
