@@ -118,10 +118,11 @@ function parsePronoteCsv(text: string): Student[] {
     .filter(({ header }) => ["option 1", "option 2", "option 3", "autres options"].some((needle) => header.includes(needle)))
     .map(({ index }) => index);
 
-  return lines
+  const parsed = lines
     .slice(1)
-    .map((line) => parseDelimitedLine(line))
-    .map((cells) => {
+    .map((line): Student | null => {
+      const cells = parseDelimitedLine(line);
+
       const name = (cells[nameIndex] || "").replace(/^"|"$/g, "").trim();
       if (!name) return null;
 
@@ -131,18 +132,20 @@ function parsePronoteCsv(text: string): Student[] {
         .filter(Boolean);
 
       const genderRaw = (cells[genderIndex] || "").replace(/^"|"$/g, "").trim();
-      const gender: Gender = genderRaw === "Masculin" || genderRaw === "Féminin" ? genderRaw : genderRaw ? "Autre" : "";
+      const gender: Gender =
+        genderRaw === "Masculin" || genderRaw === "Féminin" ? genderRaw : genderRaw ? "Autre" : "";
 
       return {
         id: uid("student"),
         name,
         gender,
-        birthDate: (cells[birthDateIndex] || "").replace(/^"|"$/g, "").trim(),
-        email: (cells[emailIndex] || "").replace(/^"|"$/g, "").trim(),
+        birthDate: ((cells[birthDateIndex] || "").replace(/^"|"$/g, "").trim()) || undefined,
+        email: ((cells[emailIndex] || "").replace(/^"|"$/g, "").trim()) || undefined,
         options,
-      } satisfies Student;
-    })
-    .filter((student): student is Student => Boolean(student));
+      };
+    });
+
+  return parsed.filter((student): student is Student => student !== null);
 }
 
 function shuffle<T>(array: T[]) {
@@ -209,14 +212,15 @@ function assignDeskGroup(seats: Seat[], positions: Array<{ row: number; col: num
   });
 }
 
-function updateRoomSeat(seats: Seat[], row: number, col: number, mode: EditorMode, rows: number, cols: number) {
+function updateRoomSeat(seats: Seat[], row: number, col: number, mode: EditorMode, cols: number): Seat[] {
   const target = getSeatAt(seats, row, col);
   if (!target) return seats;
 
   if (mode === "toggle") {
-    let nextSeats = splitDeskById(seats, target.deskId);
-    return nextSeats.map((seat) => {
+    const nextSeats = splitDeskById(seats, target.deskId);
+    return nextSeats.map((seat): Seat => {
       if (seat.row !== row || seat.col !== col) return seat;
+
       if (seat.active) {
         return {
           ...seat,
@@ -225,6 +229,7 @@ function updateRoomSeat(seats: Seat[], row: number, col: number, mode: EditorMod
           deskKind: "single",
         };
       }
+
       return {
         ...seat,
         active: true,
@@ -648,7 +653,7 @@ export default function App() {
   }
 
   function handleSeatClick(row: number, col: number) {
-    setSeats((current) => updateRoomSeat(current, row, col, editorMode, rows, cols));
+    setSeats((current) => updateRoomSeat(current, row, col, editorMode, cols));
   }
 
   function addStudent() {
@@ -773,7 +778,7 @@ export default function App() {
       <div className="mx-auto max-w-[1800px] p-6">
         <header className="mb-6 rounded-3xl bg-white p-6 shadow-sm">
           <h1 className="text-3xl font-bold">Plan de classe</h1>
-          <button onClick={() => window.open("/help.html", "_blank")} className="flex items-center gap-2">
+          <button onClick={() => window.open(`${import.meta.env.BASE_URL}help.html`, "_blank")} className="flex items-center gap-2">
             <FiHelpCircle /> Aide
           </button>
         </header>

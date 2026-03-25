@@ -1,4 +1,5 @@
 {
+  "homepage": "https://LooWyVis.github.io/planDeClasse",
   "name": "plan-de-classe",
   "private": true,
   "version": "0.0.0",
@@ -9,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
@@ -32,6 +33,5 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
     "vite": "^8.0.1"
-  },
-  "homepage": "https://LooWyVis.github.io/planDeClasse"
+  }
 }
