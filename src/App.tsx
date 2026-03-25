@@ -818,9 +818,14 @@ export default function App() {
       <div className="mx-auto max-w-[1800px] p-6">
         <header className="mb-6 rounded-3xl bg-white p-6 shadow-sm">
           <h1 className="text-3xl font-bold">Plan de classe</h1>
-          <button onClick={() => window.open(`${import.meta.env.BASE_URL}help.html`, "_blank")} className="flex items-center gap-2">
-            <FiHelpCircle /> Aide
-          </button>
+          <div className="flex">
+          
+            <span className="mr-5 pt-2">Commencez par importer votre liste d'élèves exportée sur pronotes ou ajouter manuellement vos élèves.</span>
+            <button onClick={() => window.open(`${import.meta.env.BASE_URL}help.html`, "_blank")} className="flex items-center gap-2 rounded-xl bg-white p-2 shadow-sm">
+              <FiHelpCircle /> Aide
+            </button>
+
+          </div>
         </header>
 
         <section className="rounded-3xl bg-white p-5 shadow-sm">
@@ -858,76 +863,84 @@ export default function App() {
           </div>
 
           <div className="mt-6 overflow-auto rounded-3xl border border-slate-200 bg-slate-50 p-6">
-            <div className="mb-5 flex justify-center">
-              <div className="h-6 w-[70%] rounded-xl bg-slate-900 flex items-center justify-center text-white text-sm font-medium">
-                Tableau
-              </div>
-            </div>
-            
-            <div className="flex w-max min-w-full flex-col gap-4">
-              {Array.from({ length: rows }).map((_, row) => (
-                <div key={`row-${row}`} className="flex items-stretch justify-center">
-                  {Array.from({ length: cols }).map((__, col) => {
-                    const seat = getSeatAt(seats, row, col);
-                    if (!seat) return null;
+  <div className="mb-5 flex justify-center">
+    <div className="h-6 w-[70%] rounded-xl bg-slate-900 flex items-center justify-center text-white text-sm font-medium">
+      Tableau
+    </div>
+  </div>
+  
+  <div className="flex w-max min-w-full flex-col gap-4">
+    {Array.from({ length: rows }).map((_, row) => (
+      <div key={`row-${row}`} className="flex items-stretch justify-center">
+        {Array.from({ length: cols }).map((__, col) => {
+          const seat = getSeatAt(seats, row, col);
+          if (!seat) return null;
 
-                    const sameLeft = getSeatAt(seats, row, col - 1)?.deskId === seat.deskId && seat.active;
-                    const sameRight = getSeatAt(seats, row, col + 1)?.deskId === seat.deskId && seat.active;
-                    const student = studentsById.get(result.assignment[seat.id] || "");
-                    const labelLines = splitLabel(student?.name || "Place libre", seat.deskKind === "single" ? 18 : 15);
-                    const isDeskStart = !sameLeft && seat.active;
-                    const tableGap = sameRight ? 0 : 18;
-                    const isSelected = selectedSeatId === seat.id;
+          const sameLeft = getSeatAt(seats, row, col - 1)?.deskId === seat.deskId && seat.active;
+          const sameRight = getSeatAt(seats, row, col + 1)?.deskId === seat.deskId && seat.active;
+          const student = studentsById.get(result.assignment[seat.id] || "");
+          const labelLines = splitLabel(student?.name || "Place libre", seat.deskKind === "single" ? 18 : 15);
+          const isDeskStart = !sameLeft && seat.active;
+          const tableGap = sameRight ? 0 : 18;
+          const isSelected = selectedSeatId === seat.id;
 
-                    return (
-                      <button
-                        key={seat.id}
-                        onClick={() => handleSeatClick(row, col)}
-                        className={`relative overflow-hidden p-3 text-left transition ${seat.active ? "hover:scale-[1.01]" : "hover:bg-slate-300"}`}
-                        style={{
-                          width: seatUiWidth,
-                          height: seatUiHeight,
-                          marginRight: col === cols - 1 ? 0 : tableGap,
-                          borderTopLeftRadius: sameLeft ? 6 : 20,
-                          borderBottomLeftRadius: sameLeft ? 6 : 20,
-                          borderTopRightRadius: sameRight ? 6 : 20,
-                          borderBottomRightRadius: sameRight ? 6 : 20,
-                          borderWidth: isSelected ? 4 : 2,
-                          borderStyle: "solid",
-                          borderColor: isSelected ? "#f59e0b" : seat.active ? "#334155" : "#cbd5e1",
-                          borderLeftWidth: sameLeft ? 1 : isSelected ? 4 : 2,
-                          borderRightWidth: sameRight ? 1 : isSelected ? 4 : 2,
-                          background: !seat.active ? "#cbd5e1" : row < frontRowsCount ? "#dbeafe" : "#ffffff",
-                        }}
-                      >
-                        {seat.active ? (
-                          <>
-                            {isDeskStart && (
-                              <div className="absolute right-2 top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white">
-                                {getDeskTitle(seat.deskKind)}
-                              </div>
-                            )}
-                            <div className="mt-6 space-y-1">
-                              {labelLines.map((line, lineIndex) => (
-                                <div key={`${seat.id}-${lineIndex}`} className="text-sm font-semibold leading-4 text-slate-900">
-                                  {line}
-                                </div>
-                              ))}
-                            </div>
-                            <div className="absolute bottom-2 left-3 text-[11px] text-slate-500">
-                              L{row + 1} • C{col + 1}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-sm font-medium text-slate-500">Inactif</div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
+          return (
+            <button
+              key={seat.id}
+              onClick={() => handleSeatClick(row, col)}
+              className={`relative overflow-hidden p-3 text-left transition ${seat.active ? "hover:scale-[1.01]" : "hover:bg-slate-300"}`}
+              style={{
+                width: seatUiWidth,
+                height: seatUiHeight,
+                marginRight: col === cols - 1 ? 0 : tableGap,
+                borderTopLeftRadius: sameLeft ? 6 : 20,
+                borderBottomLeftRadius: sameLeft ? 6 : 20,
+                borderTopRightRadius: sameRight ? 6 : 20,
+                borderBottomRightRadius: sameRight ? 6 : 20,
+                borderWidth: isSelected ? 4 : 2,
+                borderStyle: "solid",
+                borderColor: isSelected ? "#f59e0b" : seat.active ? "#334155" : "#cbd5e1",
+                borderLeftWidth: sameLeft ? 1 : isSelected ? 4 : 2,
+                borderRightWidth: sameRight ? 1 : isSelected ? 4 : 2,
+                background: !seat.active ? "#cbd5e1" : row < frontRowsCount ? "#dbeafe" : "#ffffff",
+              }}
+            >
+              {seat.active ? (
+                <>
+                  {isDeskStart && (
+                    <div className="absolute right-2 top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-semibold text-white">
+                      {getDeskTitle(seat.deskKind)}
+                    </div>
+                  )}
+                  <div className="mt-6 space-y-1">
+                    {labelLines.map((line, lineIndex) => (
+                      <div key={`${seat.id}-${lineIndex}`} className="text-sm font-semibold leading-4 text-slate-900">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute bottom-2 left-3 text-[11px] text-slate-500">
+                    L{row + 1} • C{col + 1}
+                  </div>
+                </>
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm font-medium text-slate-500">Inactif</div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    ))}
+  </div>
+
+  {moveMode && (
+    <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      {!selectedSeatId
+        ? "Clique sur une place pour sélectionner un élève, puis clique sur une autre place pour échanger les noms."
+        : "Élève sélectionné : clique sur une autre place pour effectuer l’échange."}
+    </div>
+  )}
+</div>
         </section>
 
         <section className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
