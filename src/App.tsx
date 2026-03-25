@@ -600,6 +600,8 @@ function exportSvg(params: {
 }
 
 export default function App() {
+  const [moveMode, setMoveMode] = useState(false);
+  const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [newStudentName, setNewStudentName] = useState("");
   const [newStudentGender, setNewStudentGender] = useState<Gender>("");
@@ -634,6 +636,21 @@ export default function App() {
     return stats;
   }, [deskGroups]);
 
+  function swapStudentsBetweenSeats(fromSeatId: string, toSeatId: string) {
+    setResult((current) => {
+      const nextAssignment = { ...current.assignment };
+      [nextAssignment[fromSeatId], nextAssignment[toSeatId]] = [
+        nextAssignment[toSeatId],
+        nextAssignment[fromSeatId],
+      ];
+
+      return {
+        ...current,
+        assignment: nextAssignment,
+      };
+    });
+  }
+
   function resizeRoom(nextRows: number, nextCols: number) {
     const safeRows = Math.max(1, Math.min(12, Number(nextRows) || 1));
     const safeCols = Math.max(1, Math.min(12, Number(nextCols) || 1));
@@ -653,6 +670,27 @@ export default function App() {
   }
 
   function handleSeatClick(row: number, col: number) {
+    const clickedSeat = getSeatAt(seats, row, col);
+    if (!clickedSeat) return;
+
+    // Mode déplacement : échange les élèves au lieu de modifier la salle
+    if (moveMode && clickedSeat.active && Object.keys(result.assignment).length > 0) {
+      if (!selectedSeatId) {
+        setSelectedSeatId(clickedSeat.id);
+        return;
+      }
+
+      if (selectedSeatId === clickedSeat.id) {
+        setSelectedSeatId(null);
+        return;
+      }
+
+      swapStudentsBetweenSeats(selectedSeatId, clickedSeat.id);
+      setSelectedSeatId(null);
+      return;
+    }
+
+    // Mode normal : édition de la salle
     setSeats((current) => updateRoomSeat(current, row, col, editorMode, cols));
   }
 
@@ -722,6 +760,8 @@ export default function App() {
       farPairs,
       avoidAdjacentPairs,
     });
+    setMoveMode(false);
+    setSelectedSeatId(null);
     setResult(optimized);
   }
 
@@ -788,15 +828,33 @@ export default function App() {
             <div>
               <h2 className="text-xl font-semibold">Plan de salle</h2>
             </div>
+            
             <div className="flex flex-wrap gap-2">
               <button onClick={generatePlan} className="rounded-2xl bg-slate-900 px-4 py-2 text-white">
                 Générer le plan
               </button>
-              <button onClick={() => exportSvg({ seats, assignment: result.assignment, students, rows, cols, frontRowsCount })} className="rounded-2xl border border-slate-300 px-4 py-2 flex items-center gap-2">
+
+              <button
+                onClick={() => {
+                  setMoveMode((current) => !current);
+                  setSelectedSeatId(null);
+                }}
+                className={`rounded-2xl px-4 py-2 border ${
+                  moveMode ? "bg-amber-100 border-amber-300 text-amber-900" : "border-slate-300"
+                }`}
+              >
+                {moveMode ? "Quitter déplacement" : "Déplacer un élève"}
+              </button>
+
+              <button
+                onClick={() => exportSvg({ seats, assignment: result.assignment, students, rows, cols, frontRowsCount })}
+                className="rounded-2xl border border-slate-300 px-4 py-2 flex items-center gap-2"
+              >
                 <FiDownload />
                 Image
               </button>
             </div>
+
           </div>
 
           <div className="mt-6 overflow-auto rounded-3xl border border-slate-200 bg-slate-50 p-6">
@@ -819,6 +877,7 @@ export default function App() {
                     const labelLines = splitLabel(student?.name || "Place libre", seat.deskKind === "single" ? 18 : 15);
                     const isDeskStart = !sameLeft && seat.active;
                     const tableGap = sameRight ? 0 : 18;
+                    const isSelected = selectedSeatId === seat.id;
 
                     return (
                       <button
@@ -833,11 +892,11 @@ export default function App() {
                           borderBottomLeftRadius: sameLeft ? 6 : 20,
                           borderTopRightRadius: sameRight ? 6 : 20,
                           borderBottomRightRadius: sameRight ? 6 : 20,
-                          borderWidth: 2,
+                          borderWidth: isSelected ? 4 : 2,
                           borderStyle: "solid",
-                          borderColor: seat.active ? "#334155" : "#cbd5e1",
-                          borderLeftWidth: sameLeft ? 1 : 2,
-                          borderRightWidth: sameRight ? 1 : 2,
+                          borderColor: isSelected ? "#f59e0b" : seat.active ? "#334155" : "#cbd5e1",
+                          borderLeftWidth: sameLeft ? 1 : isSelected ? 4 : 2,
+                          borderRightWidth: sameRight ? 1 : isSelected ? 4 : 2,
                           background: !seat.active ? "#cbd5e1" : row < frontRowsCount ? "#dbeafe" : "#ffffff",
                         }}
                       >
