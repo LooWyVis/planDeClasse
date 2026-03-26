@@ -102,6 +102,25 @@ function createDefaultClassroomLayout(rows = 5, cols = 8): Seat[] {
   return seats;
 }
 
+function createDefaultSeparateClassroomLayout(rows = 5, cols = 8): Seat[] {
+  let seats = createSeats(rows, cols);
+
+  // Motif voulu sur 8 colonnes :
+  // [0,1,2,3,4,5,6,7] = table de 2
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      seats = assignDeskGroup(
+        seats,
+        [
+          { row, col },
+        ],
+        "single"
+      );
+    }
+  }
+  return seats;
+}
+
 function createSeats(rows: number, cols: number): Seat[] {
   const seats: Seat[] = [];
   for (let row = 0; row < rows; row += 1) {
@@ -722,6 +741,15 @@ export default function App() {
 
   function resetRoomLayout() {
     setSeats(createDefaultClassroomLayout(rows, cols));
+    //setResult({ assignment: {}, score: 0, reasons: [] });
+  }
+
+  function resetRoomSeparateLayout() {
+    setSeats(createDefaultSeparateClassroomLayout(rows, cols));
+    //setResult({ assignment: {}, score: 0, reasons: [] });
+  }
+
+  function emptyRoom() {
     setResult({ assignment: {}, score: 0, reasons: [] });
   }
 
@@ -1138,6 +1166,15 @@ export default function App() {
             <button onClick={resetRoomLayout} className="mt-4 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm">
               Réinitialiser la disposition
             </button>
+
+            <button onClick={resetRoomSeparateLayout} className="mt-4 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm">
+              Dissocier toutes les tables
+            </button>
+
+            <button onClick={emptyRoom} className="mt-4 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm">
+              Vider la salle
+            </button>
+
           </section>
 
           <section className="rounded-3xl bg-white p-5 shadow-sm">
