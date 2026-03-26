@@ -678,7 +678,7 @@ export default function App() {
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(8);
   const [seats, setSeats] = useState<Seat[]>(() => createDefaultClassroomLayout(5, 8));
-  const [frontRowsCount, setFrontRowsCount] = useState(2);
+  const [frontRowsCount, setFrontRowsCount] = useState(1);
   const [preferMixedGender, setPreferMixedGender] = useState(true);
   const [frontStudentIds, setFrontStudentIds] = useState<string[]>([]);
   const [farPairs, setFarPairs] = useState<RulePair[]>([]);
