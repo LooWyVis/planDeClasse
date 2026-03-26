@@ -42,6 +42,9 @@ type ProjectData = {
   frontStudentIds: string[];
   farPairs: RulePair[];
   avoidAdjacentPairs: RulePair[];
+  assignment: Assignment;
+  score?: number;
+  reasons?: string[];
 };
 
 const seatUiWidth = 156;
@@ -860,25 +863,43 @@ export default function App() {
       frontStudentIds,
       farPairs,
       avoidAdjacentPairs,
+      assignment: result.assignment,
+      score: result.score,
+      reasons: result.reasons,
     };
+
     downloadTextFile("plan-de-classe-projet.json", JSON.stringify(data, null, 2));
   }
 
   function loadProject(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
+
     file.text().then((text) => {
       const data = JSON.parse(text) as ProjectData;
+
+      const nextRows = data.rows || 5;
+      const nextCols = data.cols || 8;
+      const nextSeats = data.seats || createDefaultClassroomLayout(nextRows, nextCols);
+
       setStudents(data.students || []);
-      setRows(data.rows || 5);
-      setCols(data.cols || 8);
-      setSeats(data.seats || createDefaultClassroomLayout(data.rows || 5, data.cols || 8));
-      setFrontRowsCount(data.frontRowsCount || 2);
+      setRows(nextRows);
+      setCols(nextCols);
+      setSeats(nextSeats);
+      setFrontRowsCount(data.frontRowsCount || 1);
       setPreferMixedGender(Boolean(data.preferMixedGender));
       setFrontStudentIds(data.frontStudentIds || []);
       setFarPairs(data.farPairs || []);
       setAvoidAdjacentPairs(data.avoidAdjacentPairs || []);
-      setResult({ assignment: {}, score: 0, reasons: [] });
+
+      setResult({
+        assignment: data.assignment || {},
+        score: data.score || 0,
+        reasons: data.reasons || [],
+      });
+
+      setMoveMode(false);
+      setSelectedSeatId(null);
       event.target.value = "";
     });
   }
